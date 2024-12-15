@@ -2,51 +2,11 @@
 
 'use client'; // Marks this file as a client-side component
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-
-import { Badge } from "@/components/ui/badge"
-
-const chartData = [
-  { month: "CPU", desktop: 186, mobile: 80 },
-  { month: "RAM", desktop: 305, mobile: 200 },
-  { month: "DISK", desktop: 237, mobile: 120 },
-]
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
-  },
-  label: {
-    color: "hsl(var(--background))",
-  },
-} satisfies ChartConfig
-
-export function BadgeDemo() {
-  return <Badge>Badge</Badge>
-}
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 
 const LxcPage = () => {
   // State to hold the LXC data from Proxmox
@@ -76,72 +36,67 @@ const LxcPage = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
+  const formatBytes = (bytes: number) => {
+    if (bytes >= 1e12) return `${(bytes / 1e12).toFixed(2)} TB`;
+    if (bytes >= 1e9) return `${(bytes / 1e9).toFixed(2)} GB`;
+    if (bytes >= 1e6) return `${(bytes / 1e6).toFixed(2)} MB`;
+    return `${bytes} B`;
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {lxcData.map((lxc, index) => (
-        <Card key={index} className="shadow-md">
-          <CardHeader>
-            <CardTitle>
-              <span
-                className={`inline-block w-2 h-2 mr-2 rounded-full ${lxc.status === 'running' ? 'bg-green-500' : 'bg-red-500'}`}
-              ></span>
-              {lxc.vmid} {lxc.name}
-            </CardTitle>
-            <CardDescription>
-              <Badge variant="secondary">{lxc.tags}</Badge>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig}>
+      {lxcData.map((lxc, index) => {
+        const diskUsage = (lxc.disk / (lxc.maxdisk || 1)) * 100;
+        const memoryUsage = (lxc.mem / (lxc.maxmem || 1)) * 100;
+        const swapUsage = (lxc.swap / (lxc.maxswap || 1)) * 100;
+        const chartData = [
+          { resource: "CPU", value: lxc.cpu || 0 },
+          { resource: "RAM", value: memoryUsage || 0, label: formatBytes(lxc.mem) },
+          { resource: "DISK", value: diskUsage || 0, label: formatBytes(lxc.disk) },
+          { resource: "SWAP", value: swapUsage || 0, label: formatBytes(lxc.swap) },
+        ];
+
+        return (
+          <Card key={index} className="shadow-md">
+            <CardHeader>
+              <CardTitle>
+                <span
+                  className={`inline-block w-3 h-3 mr-2 rounded-full ${lxc.status === 'running' ? 'bg-green-500' : 'bg-red-500'}`}
+                ></span>
+                {lxc.name}
+              </CardTitle>
+              <CardDescription>
+                ID: {lxc.vmid}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Type: {lxc.type}</p>
+              <p>Status: {lxc.status}</p>
               <BarChart
-                accessibilityLayer
+                width={300}
+                height={250}
                 data={chartData}
                 layout="vertical"
-                margin={{
-                  right: 16,
-                }}
               >
                 <CartesianGrid horizontal={false} />
+                <XAxis
+                  type="number"
+                  domain={[0, 100]}
+                  tickFormatter={(value) => `${value}%`}
+                />
                 <YAxis
-                  dataKey="month"
                   type="category"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                  hide
+                  dataKey="resource"
+                  width={75}
                 />
-                <XAxis dataKey="desktop" type="number" hide />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
-                />
-                <Bar
-                  dataKey="desktop"
-                  layout="vertical"
-                  fill="var(--color-desktop)"
-                  radius={4}
-                >
-                  <LabelList
-                    dataKey="month"
-                    position="insideLeft"
-                    offset={8}
-                    className="fill-[--color-label]"
-                    fontSize={12}
-                  />
-                  <LabelList
-                    dataKey="desktop"
-                    position="right"
-                    offset={8}
-                    className="fill-foreground"
-                    fontSize={12}
-                  />
+                <Bar dataKey="value" fill="#82ca9d">
+                  <LabelList dataKey="label" position="right" />
                 </Bar>
               </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 };

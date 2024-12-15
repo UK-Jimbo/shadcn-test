@@ -58,8 +58,14 @@ export function TeamSwitcher({
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
+            <DropdownMenuItem>
+              <div className="flex size-6 items-center justify-center rounded-sm border">
+                </div>
+                Homelab
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
+              Nodes
             </DropdownMenuLabel>
             {teams.map((team, index) => (
               <DropdownMenuItem
@@ -79,7 +85,7 @@ export function TeamSwitcher({
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="font-medium text-muted-foreground">Add node</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

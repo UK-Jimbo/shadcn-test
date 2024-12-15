@@ -25,7 +25,7 @@ export async function GET(req: Request) {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching data from Proxmox API:', error.message);
     return new Response(
       JSON.stringify({ error: `Failed to fetch data: ${error.message}` }),

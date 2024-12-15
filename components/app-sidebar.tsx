@@ -15,7 +15,10 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
+import { NavMedia } from "@/components/nav-media"
+import { NavMachine } from "@/components/nav-machine"
 import { NavProjects } from "@/components/nav-projects"
+import { NavStorage } from "@/components/nav-storage"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
@@ -29,86 +32,67 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "James Griffin",
+    email: "james_griffin@tiscali.co.uk",
     avatar: "/avatars/shadcn.jpg",
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Minisforum UM560 XT",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: "12 Threads, 32GB Memory",
     },
     {
-      name: "Acme Corp.",
+      name: "Minisforum MS-01",
       logo: AudioWaveform,
-      plan: "Startup",
+      plan: "32 Cores, 64GB Memory",
     },
     {
-      name: "Evil Corp.",
+      name: "Dell r720",
       logo: Command,
-      plan: "Free",
+      plan: "96 Cores, 192GB Memory",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Virtualization",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Virtual Machines",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "LCXs",
           url: "#",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Templates",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Storage",
       url: "#",
-      icon: BookOpen,
+      icon: Settings2,
       items: [
         {
-          title: "Introduction",
+          title: "Disks",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Pools",
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Shares",
           url: "#",
         },
         {
-          title: "Changelog",
+          title: "ISO Images",
           url: "#",
         },
       ],
@@ -137,21 +121,72 @@ const data = {
       ],
     },
   ],
+  machines: [
+    {
+      name: "System Overview",
+      url: "#",
+      icon: Frame,
+    },
+  ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Virtual Machines",
       url: "#",
       icon: Frame,
     },
     {
-      name: "Sales & Marketing",
+      name: "LXCs",
       url: "#",
       icon: PieChart,
     },
     {
-      name: "Travel",
+      name: "Docker",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Templates",
       url: "#",
       icon: Map,
+    },
+  ],
+  storage: [
+    {
+      name: "Disks",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Pools",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Shares",
+      url: "#",
+      icon: Map,
+    },
+    {
+      name: "Backups",
+      url: "#",
+      icon: Map,
+    },
+  ],
+  media: [
+    {
+      name: "ISO Images",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Container Images",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Snippets",
+      url: "#",
+      icon: PieChart,
     },
   ],
 }
@@ -163,8 +198,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMachine machine={data.machines} />
         <NavProjects projects={data.projects} />
+        <NavStorage storage={data.storage} />
+        <NavMedia media={data.media} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
